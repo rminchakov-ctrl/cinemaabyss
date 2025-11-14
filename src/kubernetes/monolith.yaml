@@ -22,10 +22,10 @@ spec:
     spec:
       containers:
       - name: monolith
-        image:  ghcr.io/rminchakov-ctrl/cinemaabysstest/monolith:latest
+        image: ghcr.io/rminchakov-ctrl/cinemaabyss/monolith@sha256:bd234cab9a597424f7e2c4c90d69bcbc1c5af3f0649e51f08c17d016780b23e5
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8080        
         env:
         - name: PORT
           value: "8080"
@@ -35,7 +35,7 @@ spec:
         - configMapRef:
             name: cinemaabyss-config
         - secretRef:
-            name: cinemaabyss-secrets
+            name: cinemaabyss-secrets        
         resources:
           limits:
             cpu: "500m"
@@ -58,6 +58,9 @@ spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: dockerconfigjson
+      nodeSelector:
+        kubernetes.io/arch: arm64 # Явно указываем архитектуру узла
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service

@@ -10,6 +10,9 @@ import (
 
 const (
 	consumerGroup = "consumer-group"
+	topicUser     = "user"
+	topicPayment  = "payment"
+	topicMovie    = "movie"
 )
 
 // EventService ...
@@ -26,8 +29,9 @@ func NewEventService(kafkaBrokers string) *EventService {
 		Async:    true,
 	}
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{kafkaBrokers},
-		GroupID: consumerGroup,
+		Brokers:     []string{kafkaBrokers},
+		GroupID:     consumerGroup,
+		GroupTopics: []string{topicUser, topicPayment, topicMovie},
 	})
 	return &EventService{writer: &writer, reader: reader}
 }
@@ -69,11 +73,11 @@ func (s *EventService) Close() {
 func mapTypeToTopic(eventType string) string {
 	switch strings.ToLower(eventType) {
 	case "user":
-		return "user"
+		return topicMovie
 	case "payment":
-		return "payment"
+		return topicPayment
 	case "movie":
-		return "movie"
+		return topicMovie
 	default:
 		return "Unknown"
 	}
@@ -81,11 +85,11 @@ func mapTypeToTopic(eventType string) string {
 
 func mapTopicToType(topicName string) string {
 	switch topicName {
-	case "user":
+	case topicUser:
 		return "User"
-	case "payment":
+	case topicPayment:
 		return "Payment"
-	case "movie":
+	case topicMovie:
 		return "Movie"
 	default:
 		return ""

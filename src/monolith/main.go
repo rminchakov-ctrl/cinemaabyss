@@ -63,6 +63,7 @@ func main() {
 		port = "8080"
 	}
 	log.Printf("Starting server on port %s", port)
+	ping()
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
@@ -87,6 +88,16 @@ func initDB() {
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]bool{"status": true})
+}
+
+func ping() {
+	rows, err := db.Query("SELECT id, username, email FROM users")
+	if err != nil {
+		log.Print(err.Error())
+		return
+	}
+	defer rows.Close()
+	log.Printf("db ping")
 }
 
 // User handlers

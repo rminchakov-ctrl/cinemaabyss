@@ -22,8 +22,7 @@ spec:
     spec:
       containers:
       - name: monolith
-        image: ghcr.io/rminchakov-ctrl/cinemaabyss/monolith
-        platform: linux/arm64
+        image: ghcr.io/rminchakov-ctrl/cinemaabyss/monolith:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080        

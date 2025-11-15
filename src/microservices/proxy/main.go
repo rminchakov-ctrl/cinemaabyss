@@ -25,7 +25,7 @@ func main() {
 	monolithURL := getEnv("MONOLITH_URL", "http://monolith:8080")
 	moviesAPIURL := getEnv("MOVIES_SERVICE_URL", "http://movies-service:8081")
 	moviesService = services.NewMoviesService(monolithURL, moviesAPIURL, moviesMigrationPercent)
-	log.Printf("Movies service initialized with service URL: %s, monolith URL %s\n", moviesAPIURL, moviesAPIURL)
+	log.Printf("Movies service initialized with service URL: %s, monolith URL %s\n", moviesAPIURL, monolithURL)
 
 	/*
 		eventAPIURL := getEnv("EVENTS_SERVICE_URL", "http://events-service:8082")

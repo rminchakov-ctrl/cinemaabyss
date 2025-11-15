@@ -32,7 +32,7 @@ func main() {
 		eventService := services.NewEventService(eventAPIURL)
 		log.Printf("Event service initialized with API URL: %s\n", eventAPIURL)
 	*/
-	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/api/health", handleHealth)
 	http.HandleFunc("/api/movies", handleMovies)
 
 	port := getEnv("PORT", "8000")
@@ -73,7 +73,7 @@ func getEnvInt(key string, defaultValue int) int {
 	return defaultValue
 }
 
-func healthHandler(w http.ResponseWriter, r *http.Request) {
+func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]bool{"status": true})
 }

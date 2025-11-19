@@ -6,7 +6,9 @@ metadata:
   annotations:
     kubernetes.io/spec.ingressClassName: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "POST, OPTIONS"
 spec:
+  ingressClassName: nginx
   rules:
     - host: cinemaabyss.example.com
       http:

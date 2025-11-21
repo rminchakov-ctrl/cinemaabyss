@@ -119,8 +119,8 @@ kafka:
   service:
     port: 9092
   image:
-    repository: confluentinc/cp-kafka:7.6.0
-    tag: 2.13-2.7.0
+    repository: confluentinc/cp-kafka
+    tag: 7.6.0
     pullPolicy: IfNotPresent
   replicas: 1
   resources:
@@ -149,8 +149,8 @@ kafka:
 zookeeper:
   enabled: true
   image:
-    repository: confluentinc/cp-zookeeper:7.6.0
-    tag: latest
+    repository: confluentinc/cp-zookeeper
+    tag: 7.6.0
     pullPolicy: IfNotPresent
   replicas: 1
   resources:

@@ -97,6 +97,8 @@ moviesService:
     type: ClusterIP
   podAnnotations:
     sidecar.istio.io/inject: "true"
+    proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+    traffic.sidecar.istio.io/includeOutboundPorts: "8080"
 
 # Events service configuration
 eventsService:

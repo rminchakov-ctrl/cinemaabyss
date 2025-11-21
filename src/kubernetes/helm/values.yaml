@@ -117,6 +117,7 @@ kafka:
   nameOverride: "kbroker"
   enabled: true
   service:
+    type: ClusterIP
     port: 9092
   image:
     repository: confluentinc/cp-kafka
@@ -125,10 +126,10 @@ kafka:
   replicas: 1
   resources:
     limits:
-      cpu: 1000m
+      cpu: 50m
       memory: 1Gi
     requests:
-      cpu: 200m
+      cpu: 30m
       memory: 512Mi
   persistence:
     enabled: true
@@ -144,6 +145,39 @@ kafka:
     - name: payment-events
       partitions: 1
       replicationFactor: 1
+  configuration:
+    env:
+      KAFKA_MODE: "kafka"
+      KAFKA_BROKER_ID: "1"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kbroker:9092"
+      KAFKA_LOG_DIRS: "/kafka/kafka-logs"
+    override:
+      server.properties: |
+        broker.id=1
+        listeners=PLAINTEXT://:9092
+        advertised.listeners=PLAINTEXT://kbroker:9092
+        zookeeper.connect=zookeeper:2181
+        zookeeper.connection.timeout.ms=30000
+  extraInitContainers:
+    - name: wait-for-zookeeper
+      image: busybox:1.28
+      command: ['sh', '-c', 'until nslookup zookeeper; do echo "Waiting for Zookeeper..."; sleep 2; done']
+  livenessProbe:
+    tcpSocket:
+      port: 9092
+    initialDelaySeconds: 60
+    timeoutSeconds: 5
+    periodSeconds: 20
+    failureThreshold: 3
+  readinessProbe:
+    tcpSocket:
+      port: 9092
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 3
 
 # Zookeeper configuration
 zookeeper:
@@ -151,19 +185,24 @@ zookeeper:
   image:
     repository: confluentinc/cp-zookeeper
     tag: 7.6.0
-    pullPolicy: IfNotPresent
+    pullPolicy: IfNotPresent    
   replicas: 1
   resources:
     limits:
-      cpu: 500m
+      cpu: 50m
       memory: 512Mi
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 256Mi
   persistence:
     enabled: true
     size: 1Gi
     accessMode: ReadWriteOnce
+  config:
+    clientPort: 2181
+    tickTime: 2000
+    dataDir: /var/lib/zookeeper/data
+    maxClientCnxns: 60  
 
 # Ingress configuration
 ingress:

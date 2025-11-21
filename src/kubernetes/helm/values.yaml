@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6ICJjbTFwYm1Ob1lXdHZkanBuYUhCZk4yZHVRMjFKVG05TVRXWlFaR2hzVkc4MWVVVjBlRTlST1ZSWmQxaEhNRUZYTlRkaSIKCQl9Cgl9LAoJImNyZWRzU3RvcmUiOiAiZGVza3RvcCIsCgkiY3VycmVudENvbnRleHQiOiAiZGVza3RvcC1saW51eCIKfQo=
 # Database configuration
 database:
   host: postgres
@@ -33,7 +33,7 @@ database:
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -53,7 +53,7 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -68,12 +68,15 @@ proxyService:
     port: 80
     targetPort: 8000
     type: ClusterIP
+  env:
+    GRADUAL_MIGRATION: "true"
+    MOVIES_MIGRATION_PERCENT: "50"
 
 # Movies service configuration
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -93,7 +96,7 @@ moviesService:
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/events-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -111,9 +114,12 @@ eventsService:
 
 # Kafka configuration
 kafka:
+  nameOverride: "kbroker"
   enabled: true
+  service:
+    port: 9092
   image:
-    repository: wurstmeister/kafka
+    repository: confluentinc/cp-kafka:7.6.0
     tag: 2.13-2.7.0
     pullPolicy: IfNotPresent
   replicas: 1
@@ -143,7 +149,7 @@ kafka:
 zookeeper:
   enabled: true
   image:
-    repository: wurstmeister/zookeeper
+    repository: confluentinc/cp-zookeeper:7.6.0
     tag: latest
     pullPolicy: IfNotPresent
   replicas: 1

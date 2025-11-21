@@ -36,7 +36,7 @@ spec:
           value: "{{ .Values.kafka.nameOverride | default "kafka" }}:{{ .Values.kafka.service.port | default "9092" }}"
         {{- if .Values.kafka.topics }}
         - name: KAFKA_TOPICS
-          value: {{ .Values.kafka.topics | toJson }}
+          value: {{ .Values.kafka.topics | toJson | quote }}
         {{- end }}
         envFrom:
         - configMapRef:

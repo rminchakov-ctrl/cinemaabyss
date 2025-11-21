@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6ICJjbTFwYm1Ob1lXdHZkanBuYUhCZk4yZHVRMjFKVG05TVRXWlFaR2hzVkc4MWVVVjBlRTlST1ZSWmQxaEhNRUZYTlRkaSIKCQl9Cgl9LAoJImNyZWRzU3RvcmUiOiAiZGVza3RvcCIsCgkiY3VycmVudENvbnRleHQiOiAiZGVza3RvcC1saW51eCIKfQo=
 # Database configuration
 database:
   host: postgres
@@ -33,7 +33,7 @@ database:
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -48,12 +48,16 @@ monolith:
     port: 8080
     targetPort: 8080
     type: ClusterIP
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
+    proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+    traffic.sidecar.istio.io/includeOutboundPorts: "8080"
 
 # Proxy service configuration
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -68,12 +72,15 @@ proxyService:
     port: 80
     targetPort: 8000
     type: ClusterIP
+  env:
+    GRADUAL_MIGRATION: "true"
+    MOVIES_MIGRATION_PERCENT: "50"
 
 # Movies service configuration
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -88,12 +95,16 @@ moviesService:
     port: 8081
     targetPort: 8081
     type: ClusterIP
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
+    proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+    traffic.sidecar.istio.io/includeOutboundPorts: "8080"
 
 # Events service configuration
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/rminchakov-ctrl/cinemaabyss/events-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -111,18 +122,22 @@ eventsService:
 
 # Kafka configuration
 kafka:
+  nameOverride: "kbroker"
   enabled: true
+  service:
+    type: ClusterIP
+    port: 9092
   image:
-    repository: wurstmeister/kafka
-    tag: 2.13-2.7.0
+    repository: confluentinc/cp-kafka
+    tag: 7.6.0
     pullPolicy: IfNotPresent
   replicas: 1
   resources:
     limits:
-      cpu: 1000m
+      cpu: 50m
       memory: 1Gi
     requests:
-      cpu: 200m
+      cpu: 30m
       memory: 512Mi
   persistence:
     enabled: true
@@ -138,26 +153,50 @@ kafka:
     - name: payment-events
       partitions: 1
       replicationFactor: 1
+  configuration:
+    env:
+      KAFKA_MODE: "kafka"
+      KAFKA_BROKER_ID: "1"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kbroker:9092"
+      KAFKA_LOG_DIRS: "/kafka/kafka-logs"
+    override:
+      server.properties: |
+        broker.id=1
+        listeners=PLAINTEXT://:9092
+        advertised.listeners=PLAINTEXT://kbroker:9092
+        zookeeper.connect=zookeeper:2181
+        zookeeper.connection.timeout.ms=30000
+  extraInitContainers:
+    - name: wait-for-zookeeper
+      image: busybox:1.28
+      command: ['sh', '-c', 'until nslookup zookeeper; do echo "Waiting for Zookeeper..."; sleep 2; done']  
 
 # Zookeeper configuration
 zookeeper:
   enabled: true
   image:
-    repository: wurstmeister/zookeeper
-    tag: latest
-    pullPolicy: IfNotPresent
+    repository: confluentinc/cp-zookeeper
+    tag: 7.6.0
+    pullPolicy: IfNotPresent    
   replicas: 1
   resources:
     limits:
-      cpu: 500m
+      cpu: 50m
       memory: 512Mi
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 256Mi
   persistence:
     enabled: true
     size: 1Gi
     accessMode: ReadWriteOnce
+  config:
+    clientPort: 2181
+    tickTime: 2000
+    dataDir: /var/lib/zookeeper/data
+    maxClientCnxns: 60  
 
 # Ingress configuration
 ingress:

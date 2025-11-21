@@ -1,0 +1,81 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title КиноБездна - Контейнеры
+
+System_Boundary(streaming_platform, "Streaming Platform") {
+    Person(user, "Пользователь", "Смотрит фильмы, управляет подписками")
+    
+    Container_Boundary(api_gateway_domain, "API Gateway") {
+        Container(api_gw, "API Gateway", "Kubernetes Ingress/Nginx", "Маршрутизация, балансировка нагрузки")
+    }
+
+    Container_Boundary(user_domain, "User") {
+        Container(auth_srv, "Auth Service", "Go", "Аутентификация")
+        Container(user_srv, "User Service", "Go", "Профили пользователей")
+        Container(user_db, "Users DB", "PostgreSQL", "Аутентификация + профили")
+    }
+
+    Container_Boundary(content_domain, "Content") {
+        Container(movies, "Movies Service", "Go", "Метаданные видео")
+        Container(content_db, "Content DB", "PostgreSQL", "Метаданные (видео, жанры)")
+        Container(movies_storage, "Movies Storage", "MinIO/AWS S3", "Видеофайлы")
+        Container(content_cache, "Metadata Cache", "Redis", "Кеш метаданных")
+    }
+
+    Container_Boundary(billing_domain, "Billing") {
+        Container(sub_srv, "Subscription Service", "Go", "Подписки")
+        Container(pay_srv, "Payment Service", "Go", "Платежи")
+        Container(billing_db, "Billing DB", "PostgreSQL", "Подписки + транзакции")
+    }
+
+    Container_Boundary(rec_domain, "Recommendations") {
+        Container(rec_srv, "Recommendation Service", "Python", "Рекомендации")
+        Container(analytics_db, "Analytics DB", "PostgreSQL", "Данные для рекомендаций")
+    }
+
+    Container_Boundary(infra_domain, "Infrastructure") {
+        Container(ci_cd, "CI/CD Pipeline", "Jenkins", "Автоматизация деплоя")
+        Container(monitoring, "Monitoring", "Prometheus/Grafana", "Метрики и логи")
+        Container(cdn, "CDN", "Cloudflare", "Раздача видео")
+        Container(kafka, "Kafka", "Apache Kafka", "Очередь событий")
+    }
+}
+
+System_Ext(ext_payment_api, "Payment Provider API", "Stripe/PP")
+System_Ext(ext_rec_api, "Recommendation API", "Внешняя система")
+
+Rel(user, api_gw, "HTTPS (REST/gRPC)", "Web/Mobile/Smart TV")
+
+Rel(api_gw, auth_srv, "gRPC", "Аутентификация")
+Rel(api_gw, user_srv, "gRPC", "Данные пользователей")
+Rel(api_gw, movies, "gRPC", "Запросы видео")
+Rel(api_gw, sub_srv, "gRPC", "Подписки")
+Rel(api_gw, pay_srv, "gRPC", "Платежи")
+Rel(api_gw, rec_srv, "gRPC", "Рекомендации")
+
+Rel(auth_srv, user_db, "SQL", "Учетные данные")
+Rel(user_srv, user_db, "SQL", "Профили")
+
+Rel(movies, content_db, "SQL", "Метаданные")
+Rel(movies, content_cache, "Кеширование", "Популярный контент")
+Rel(movies, movies_storage, "S3 API", "Видеофайлы")
+
+Rel(sub_srv, billing_db, "SQL", "Подписки")
+Rel(pay_srv, billing_db, "SQL", "Транзакции")
+
+Rel(rec_srv, analytics_db, "SQL", "Данные рекомендаций")
+
+Rel(movies, kafka, "Отправка событий", "Новое видео/просмотры")
+Rel(user_srv, kafka, "Отправка событий", "Изменение профиля")
+Rel(pay_srv, kafka, "Отправка событий", "Оплата подписки")
+Rel(kafka, rec_srv, "События", "Обновление рекомендаций")
+
+Rel(ci_cd, api_gw, "Деплой", "Обновления")
+Rel(monitoring, api_gw, "Метрики", "Наблюдаемость")
+Rel(movies_storage, cdn, "Отдача видео", "CDN")
+
+Rel(pay_srv, ext_payment_api, "REST", "Оплата")
+Rel(rec_srv, ext_rec_api, "REST", "Рекомендации")
+
+@enduml

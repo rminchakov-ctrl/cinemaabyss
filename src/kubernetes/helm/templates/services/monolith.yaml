@@ -22,6 +22,8 @@ spec:
     metadata:
       labels:
         app: monolith
+      annotations:
+        {{- toYaml .Values.monolith.podAnnotations | nindent 8 }}
     spec:
       containers:
       - name: monolith

@@ -1,0 +1,5 @@
+kubectl exec -n cinemaabyss kafka-0 -- kafka-topics \
+  --bootstrap-server kbroker:9092 \
+  --create --topic __consumer_offsets \
+  --partitions 50 \
+  --config cleanup.policy=compact

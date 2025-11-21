@@ -5,7 +5,7 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+[ссылка на файл](schemas/02_container.puml)
 
 
 ## Задание 2
@@ -331,7 +331,7 @@ kubectl delete  namespace cinemaabyss
 ```
 Запустите 
 ```bash
-helm install cinemaabyss .\src\kubernetes\helm --namespace cinemaabyss --create-namespace
+helm install cinemaabyss ./src/kubernetes/helm --namespace cinemaabyss --create-namespace
 ```
 Если в процессе будет ошибка
 ```code
@@ -359,16 +359,25 @@ helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 
 helm install istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace
-helm install istio-ingressgateway istio/gateway -n istio-system
-helm install istiod istio/istiod -n istio-system --wait
 
-helm install cinemaabyss .\src\kubernetes\helm --namespace cinemaabyss --create-namespace
+helm install istio-ingressgateway istio/gateway -n istio-system \
+  --set global.imagePullPolicy=IfNotPresent\
+  --set resources.requests.cpu="100m" \
+  --set resources.requests.memory="256Mi" \
+  --set resources.limits.cpu="500m" \
+  --set resources.limits.memory="512Mi"
+
+helm install istiod istio/istiod -n istio-system \
+  --set pilot.resources.requests.cpu=200m \
+  --set pilot.resources.requests.memory=1Gi
+
+helm install cinemaabyss ./src/kubernetes/helm --namespace cinemaabyss --create-namespace
 
 kubectl label namespace cinemaabyss istio-injection=enabled --overwrite
 
 kubectl get namespace -L istio-injection
 
-kubectl apply -f .\src\kubernetes\circuit-breaker-config.yaml -n cinemaabyss
+kubectl apply -f ./src/kubernetes/circuit-breaker-config.yaml -n cinemaabyss
 
 ```
 

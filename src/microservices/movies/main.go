@@ -81,7 +81,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllMovies(w http.ResponseWriter, r *http.Request) {
+func getAllMovies(w http.ResponseWriter, _ *http.Request) {
 	rows, err := db.Query("SELECT id, title, description, rating FROM movies")
 	fmt.Println("get movies from movies")
 	if err != nil {

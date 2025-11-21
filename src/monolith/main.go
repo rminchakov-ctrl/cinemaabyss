@@ -63,6 +63,7 @@ func main() {
 		port = "8080"
 	}
 	log.Printf("Starting server on port %s", port)
+	ping()
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
@@ -89,6 +90,16 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]bool{"status": true})
 }
 
+func ping() {
+	rows, err := db.Query("SELECT id, username, email FROM users")
+	if err != nil {
+		log.Print(err.Error())
+		return
+	}
+	defer rows.Close()
+	log.Printf("db ping")
+}
+
 // User handlers
 func handleUsers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -105,7 +116,7 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllUsers(w http.ResponseWriter, r *http.Request) {
+func getAllUsers(w http.ResponseWriter, _ *http.Request) {
 	rows, err := db.Query("SELECT id, username, email FROM users")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -174,7 +185,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllMovies(w http.ResponseWriter, r *http.Request) {
+func getAllMovies(w http.ResponseWriter, _ *http.Request) {
 	rows, err := db.Query("SELECT id, title, description, rating FROM movies")
 	fmt.Println("get movies from monolith")
 	if err != nil {
@@ -307,7 +318,7 @@ func handlePayments(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAllPayments(w http.ResponseWriter, r *http.Request) {
+func getAllPayments(w http.ResponseWriter, _ *http.Request) {
 	rows, err := db.Query("SELECT id, user_id, amount, timestamp FROM payments")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

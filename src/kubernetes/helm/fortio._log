@@ -1,0 +1,119 @@
+kubectl exec -n cinemaabyss $FORTIO_POD -c fortio -- fortio load -c 50 -qps 0 -n 500 -loglevel Warning http://movies-service:8081/api/movies
+
+{"ts":1763747328.180827,"level":"info","r":1,"file":"logger.go","line":298,"msg":"Log level is now 3 Warning (was 2 Info)"}
+Fortio 1.69.5 running at 0 queries per second, 6->6 procs, for 500 calls: http://movies-service:8081/api/movies
+Starting at max qps with 50 thread(s) [gomax 6] for exactly 500 calls (10 per thread + 0)
+Ended after 1.609290291s : 500 calls. qps=310.7
+Aggregated Function Time : count 500 avg 0.1465996 +/- 0.08412 min 0.001561391 max 0.393050196 sum 73.299799
+# range, mid point, percentile, count
+>= 0.00156139 <= 0.002 , 0.0017807 , 0.60, 3
+> 0.002 <= 0.003 , 0.0025 , 2.00, 7
+> 0.003 <= 0.004 , 0.0035 , 2.60, 3
+> 0.004 <= 0.005 , 0.0045 , 3.00, 2
+> 0.005 <= 0.006 , 0.0055 , 3.80, 4
+> 0.006 <= 0.007 , 0.0065 , 5.00, 6
+> 0.007 <= 0.008 , 0.0075 , 5.40, 2
+> 0.008 <= 0.009 , 0.0085 , 5.60, 1
+> 0.009 <= 0.01 , 0.0095 , 5.80, 1
+> 0.01 <= 0.011 , 0.0105 , 6.40, 3
+> 0.011 <= 0.012 , 0.0115 , 6.60, 1
+> 0.012 <= 0.014 , 0.013 , 7.60, 5
+> 0.014 <= 0.016 , 0.015 , 8.20, 3
+> 0.016 <= 0.018 , 0.017 , 9.60, 7
+> 0.018 <= 0.02 , 0.019 , 10.60, 5
+> 0.02 <= 0.025 , 0.0225 , 11.80, 6
+> 0.025 <= 0.03 , 0.0275 , 12.00, 1
+> 0.035 <= 0.04 , 0.0375 , 12.20, 1
+> 0.04 <= 0.045 , 0.0425 , 12.40, 1
+> 0.045 <= 0.05 , 0.0475 , 12.80, 2
+> 0.05 <= 0.06 , 0.055 , 15.00, 11
+> 0.06 <= 0.07 , 0.065 , 16.40, 7
+> 0.07 <= 0.08 , 0.075 , 16.60, 1
+> 0.08 <= 0.09 , 0.085 , 20.40, 19
+> 0.09 <= 0.1 , 0.095 , 29.00, 43
+> 0.1 <= 0.12 , 0.11 , 47.80, 94
+> 0.12 <= 0.14 , 0.13 , 49.60, 9
+> 0.14 <= 0.16 , 0.15 , 56.60, 35
+> 0.16 <= 0.18 , 0.17 , 59.20, 13
+> 0.18 <= 0.2 , 0.19 , 76.80, 88
+> 0.2 <= 0.25 , 0.225 , 88.60, 59
+> 0.25 <= 0.3 , 0.275 , 96.00, 37
+> 0.3 <= 0.35 , 0.325 , 99.00, 15
+> 0.35 <= 0.39305 , 0.371525 , 100.00, 5
+# target 50% 0.141143
+# target 75% 0.197955
+# target 90% 0.259459
+# target 99% 0.35
+# target 99.9% 0.388745
+Error cases : no data
+# Socket and IP used for each connection:
+[0]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.00094926 +/- 0 min 0.00094926 max 0.00094926 sum 0.00094926
+[1]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.00089801 +/- 0 min 0.00089801 max 0.00089801 sum 0.00089801
+[2]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000897801 +/- 0 min 0.000897801 max 0.000897801 sum 0.000897801
+[3]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000891467 +/- 0 min 0.000891467 max 0.000891467 sum 0.000891467
+[4]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000845508 +/- 0 min 0.000845508 max 0.000845508 sum 0.000845508
+[5]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000802591 +/- 0 min 0.000802591 max 0.000802591 sum 0.000802591
+[6]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000686132 +/- 0 min 0.000686132 max 0.000686132 sum 0.000686132
+[7]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000705049 +/- 0 min 0.000705049 max 0.000705049 sum 0.000705049
+[8]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.00069809 +/- 0 min 0.00069809 max 0.00069809 sum 0.00069809
+[9]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000662049 +/- 0 min 0.000662049 max 0.000662049 sum 0.000662049
+[10]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000633131 +/- 0 min 0.000633131 max 0.000633131 sum 0.000633131
+[11]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000639923 +/- 0 min 0.000639923 max 0.000639923 sum 0.000639923
+[12]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000611256 +/- 0 min 0.000611256 max 0.000611256 sum 0.000611256
+[13]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000578798 +/- 0 min 0.000578798 max 0.000578798 sum 0.000578798
+[14]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000524631 +/- 0 min 0.000524631 max 0.000524631 sum 0.000524631
+[15]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000484755 +/- 0 min 0.000484755 max 0.000484755 sum 0.000484755
+[16]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000328004 +/- 0 min 0.000328004 max 0.000328004 sum 0.000328004
+[17]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000384212 +/- 0 min 0.000384212 max 0.000384212 sum 0.000384212
+[18]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000332753 +/- 0 min 0.000332753 max 0.000332753 sum 0.000332753
+[19]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000278919 +/- 0 min 0.000278919 max 0.000278919 sum 0.000278919
+[20]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000225336 +/- 0 min 0.000225336 max 0.000225336 sum 0.000225336
+[21]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000183252 +/- 0 min 0.000183252 max 0.000183252 sum 0.000183252
+[22]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000150502 +/- 0 min 0.000150502 max 0.000150502 sum 0.000150502
+[23]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000100084 +/- 0 min 0.000100084 max 0.000100084 sum 0.000100084
+[24]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.001078594 +/- 0 min 0.001078594 max 0.001078594 sum 0.001078594
+[25]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000975468 +/- 0 min 0.000975468 max 0.000975468 sum 0.000975468
+[26]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000930218 +/- 0 min 0.000930218 max 0.000930218 sum 0.000930218
+[27]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000911551 +/- 0 min 0.000911551 max 0.000911551 sum 0.000911551
+[28]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000865425 +/- 0 min 0.000865425 max 0.000865425 sum 0.000865425
+[29]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000893884 +/- 0 min 0.000893884 max 0.000893884 sum 0.000893884
+[30]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000834383 +/- 0 min 0.000834383 max 0.000834383 sum 0.000834383
+[31]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000790675 +/- 0 min 0.000790675 max 0.000790675 sum 0.000790675
+[32]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000724382 +/- 0 min 0.000724382 max 0.000724382 sum 0.000724382
+[33]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000687466 +/- 0 min 0.000687466 max 0.000687466 sum 0.000687466
+[34]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000676299 +/- 0 min 0.000676299 max 0.000676299 sum 0.000676299
+[35]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.00067034 +/- 0 min 0.00067034 max 0.00067034 sum 0.00067034
+[36]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000618632 +/- 0 min 0.000618632 max 0.000618632 sum 0.000618632
+[37]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000570297 +/- 0 min 0.000570297 max 0.000570297 sum 0.000570297
+[38]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.00044813 +/- 0 min 0.00044813 max 0.00044813 sum 0.00044813
+[39]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000262753 +/- 0 min 0.000262753 max 0.000262753 sum 0.000262753
+[40]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000354003 +/- 0 min 0.000354003 max 0.000354003 sum 0.000354003
+[41]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000284086 +/- 0 min 0.000284086 max 0.000284086 sum 0.000284086
+[42]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000282628 +/- 0 min 0.000282628 max 0.000282628 sum 0.000282628
+[43]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000244294 +/- 0 min 0.000244294 max 0.000244294 sum 0.000244294
+[44]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000208711 +/- 0 min 0.000208711 max 0.000208711 sum 0.000208711
+[45]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000168543 +/- 0 min 0.000168543 max 0.000168543 sum 0.000168543
+[46]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000135876 +/- 0 min 0.000135876 max 0.000135876 sum 0.000135876
+[47]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.000144085 +/- 0 min 0.000144085 max 0.000144085 sum 0.000144085
+[48]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 2.5917e-05 +/- 0 min 2.5917e-05 max 2.5917e-05 sum 2.5917e-05
+[49]   1 socket used, resolved to 10.98.192.151:8081, connection timing : count 1 avg 0.001165471 +/- 0 min 0.001165471 max 0.001165471 sum 0.001165471
+Connection time (s) : count 50 avg 0.00056887248 +/- 0.0002949 min 2.5917e-05 max 0.001165471 sum 0.028443624
+Sockets used: 50 (for perfect keepalive, would be 50)
+Uniform: false, Jitter: false, Catchup allowed: true
+IP addresses distribution:
+10.98.192.151:8081: 50
+Code 200 : 500 (100.0 %)
+Response Header Sizes : count 500 avg 160.64 +/- 0.5953 min 159 max 161 sum 80320
+Response Body/Total Sizes : count 500 avg 1427.64 +/- 0.5953 min 1426 max 1428 sum 713820
+All done 500 calls (plus 0 warmup) 146.600 ms avg, 310.7 qps
+
+_______________________________
+
+kubectl exec -n cinemaabyss $FORTIO_POD -c fortio -c istio-proxy -- pilot-agent request GET stats | grep movies-service | grep pending
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.circuit_breakers.default.remaining_pending: 30
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.circuit_breakers.default.rq_pending_open: 0
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.circuit_breakers.high.rq_pending_open: 0
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.upstream_rq_pending_active: 0
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.upstream_rq_pending_failure_eject: 0
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.upstream_rq_pending_overflow: 0
+cluster.outbound|8081||movies-service.cinemaabyss.svc.cluster.local;.upstream_rq_pending_total: 50

@@ -48,6 +48,10 @@ monolith:
     port: 8080
     targetPort: 8080
     type: ClusterIP
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
+    proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+    traffic.sidecar.istio.io/includeOutboundPorts: "8080"
 
 # Proxy service configuration
 proxyService:
@@ -91,6 +95,8 @@ moviesService:
     port: 8081
     targetPort: 8081
     type: ClusterIP
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
 
 # Events service configuration
 eventsService:
@@ -163,21 +169,7 @@ kafka:
   extraInitContainers:
     - name: wait-for-zookeeper
       image: busybox:1.28
-      command: ['sh', '-c', 'until nslookup zookeeper; do echo "Waiting for Zookeeper..."; sleep 2; done']
-  livenessProbe:
-    tcpSocket:
-      port: 9092
-    initialDelaySeconds: 60
-    timeoutSeconds: 5
-    periodSeconds: 20
-    failureThreshold: 3
-  readinessProbe:
-    tcpSocket:
-      port: 9092
-    initialDelaySeconds: 15
-    timeoutSeconds: 5
-    periodSeconds: 10
-    failureThreshold: 3
+      command: ['sh', '-c', 'until nslookup zookeeper; do echo "Waiting for Zookeeper..."; sleep 2; done']  
 
 # Zookeeper configuration
 zookeeper:

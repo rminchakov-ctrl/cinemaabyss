@@ -359,8 +359,18 @@ helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 
 helm install istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace
-helm install istio-ingressgateway istio/gateway -n istio-system
-helm install istiod istio/istiod -n istio-system --wait
+
+helm install istio-ingressgateway istio/gateway -n istio-system \
+  --set global.imagePullPolicy=IfNotPresent\
+  --set resources.requests.cpu="100m" \
+  --set resources.requests.memory="256Mi" \
+  --set resources.limits.cpu="500m" \
+  --set resources.limits.memory="512Mi"
+
+helm upgrade istiod istio/istiod -n istio-system \
+  --set pilot.resources.requests.cpu=200m \
+  --set pilot.resources.requests.memory=1Gi \
+  --reuse-values
 
 helm install cinemaabyss ./src/kubernetes/helm --namespace cinemaabyss --create-namespace
 
